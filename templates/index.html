@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Zentum - Next-Generation AI-Powered Quantum Algorithm Learning Platform & Interactive Simulator">
+  <title>Zentum ⚛️ Interactive Quantum Algorithm & Circuit Studio</title>
+
+  <!-- Google Fonts: Space Grotesk, Outfit, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="cyber-theme">
+  <!-- Ambient Quantum Background Grid & Aurora Mesh -->
+  <div class="ambient-aurora aurora-1"></div>
+  <div class="ambient-aurora aurora-2"></div>
+  <div class="ambient-aurora aurora-3"></div>
+  <div class="cyber-grid-overlay"></div>
+
+  <!-- Animated Quantum Particle Canvas in Background -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- App Wrapper -->
+  <div class="app-container">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="atom-icon-wrapper">
+          <div class="atom-icon">
+            <div class="electron orbit1"></div>
+            <div class="electron orbit2"></div>
+            <div class="electron orbit3"></div>
+            <div class="nucleus"></div>
+            <div class="nucleus-glow"></div>
+          </div>
+        </div>
+        <div class="brand-text">
+          <h1>
+            <span class="brand-name">Zentum</span>
+            <span class="badge-tag"><span class="live-dot"></span>QUANTUM 2.0</span>
+          </h1>
+          <p class="tagline">Interactive Algorithm Studio • Real-Time Statevector AI Engine</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" id="navTabs">
+        <button class="nav-tab active" data-tab="studio"><span class="tab-icon">⚡</span> <span class="tab-title">Circuit Studio</span></button>
+        <button class="nav-tab" data-tab="curriculum"><span class="tab-icon">📚</span> <span class="tab-title">Modules & Theory</span></button>
+        <button class="nav-tab" data-tab="quiz-tab"><span class="tab-icon">🎯</span> <span class="tab-title">Mastery Quiz</span></button>
+        <button class="nav-tab" data-tab="export-tab"><span class="tab-icon">💻</span> <span class="tab-title">Code & Hardware</span></button>
+      </nav>
+
+      <!-- Global Controls -->
+      <div class="header-actions">
+        <div class="progress-pill" id="globalProgressPill" title="Your overall course progress">
+          <span class="progress-label">Progress</span>
+          <div class="progress-bar-track"><div class="progress-bar-fill" id="overallProgressBar" style="width: 0%"></div></div>
+          <span class="progress-pct" id="overallProgressPct">0%</span>
+        </div>
+
+        <button id="soundToggle" class="icon-btn sound-btn" title="Toggle Quantum SFX (M)" aria-label="Toggle Sound">
+          <span id="soundIcon" class="sound-icon-symbol">🔊</span>
+          <span class="sound-wave-bars">
+            <span class="bar bar-1"></span>
+            <span class="bar bar-2"></span>
+            <span class="bar bar-3"></span>
+          </span>
+        </button>
+
+        <button id="resetApp" class="icon-btn danger" title="Reset Course Progress & Circuit" aria-label="Reset">
+          <span>🔄</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Content -->
+    <main class="main-content">
+
+      <!-- ============================================== -->
+      <!-- TAB 1: CIRCUIT STUDIO (PRIMARY WORKSPACE) -->
+      <!-- ============================================== -->
+      <section id="studio" class="tab-pane active">
+        <div class="studio-grid">
+
+          <!-- Left Column: Presets & Controls & Circuit Composer -->
+          <div class="circuit-workspace-panel card glass">
+            
+            <!-- Composer Header & Toolbar -->
+            <div class="panel-header-row">
+              <div class="title-group">
+                <span class="section-badge">COMPOSER</span>
+                <h2>Quantum Circuit Canvas</h2>
+              </div>
+              
+              <div class="circuit-quick-actions">
+                <div class="select-group">
+                  <label for="presetsSelect">Preset Algorithms:</label>
+                  <select id="presetsSelect">
+                    <option value="">-- Choose Algorithm Preset --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gate Palette -->
+            <div class="palette-container">
+              <div class="palette-group">
+                <span class="palette-label">Single-Qubit Gates:</span>
+                <div class="palette-buttons" id="singleGates">
+                  <button class="gate-btn h-gate sel" data-g="H" title="Hadamard (Superposition)">H</button>
+                  <button class="gate-btn x-gate" data-g="X" title="Pauli-X (Bit Flip / NOT)">X</button>
+                  <button class="gate-btn y-gate" data-g="Y" title="Pauli-Y">Y</button>
+                  <button class="gate-btn z-gate" data-g="Z" title="Pauli-Z (Phase Flip)">Z</button>
+                  <button class="gate-btn s-gate" data-g="S" title="S Gate (π/2 Phase)">S</button>
+                  <button class="gate-btn sdg-gate" data-g="Sdg" title="S† Gate (-π/2 Phase)">S†</button>
+                  <button class="gate-btn t-gate" data-g="T" title="T Gate (π/4 Phase)">T</button>
+                  <button class="gate-btn tdg-gate" data-g="Tdg" title="T† Gate (-π/4 Phase)">T†</button>
+                </div>
+              </div>
+
+              <div class="palette-group">
+                <span class="palette-label">Multi-Qubit Gates:</span>
+                <div class="palette-buttons" id="multiGates">
+                  <button class="gate-btn cx-gate" data-g="CX" title="CNOT / Controlled-X (Click Control, then Target)">CX (CNOT)</button>
+                  <button class="gate-btn cz-gate" data-g="CZ" title="Controlled-Z (Click Control, then Target)">CZ</button>
+                  <button class="gate-btn ccx-gate" data-g="CCX" title="Toffoli / CCX (Click 2 Controls, then Target)">CCX (Toffoli)</button>
+                  <button class="gate-btn swap-gate" data-g="SWAP" title="SWAP (Click 2 Qubits)">SWAP</button>
+                </div>
+              </div>
+
+              <div class="palette-group info-tooltip">
+                <span class="help-chip" id="gateHelpChip">💡 Active Gate: <strong>Hadamard (H)</strong> - Creates (|0⟩ + |1⟩)/√2</span>
+              </div>
+            </div>
+
+            <!-- Composer Settings Bar -->
+            <div class="composer-settings-bar">
+              <div class="setting-item">
+                <label for="nq">Qubits:</label>
+                <div class="btn-group-segmented" id="qubitCountBtns">
+                  <button class="seg-btn" data-nq="1">1</button>
+                  <button class="seg-btn active" data-nq="2">2</button>
+                  <button class="seg-btn" data-nq="3">3</button>
+                  <button class="seg-btn" data-nq="4">4</button>
+                  <button class="seg-btn" data-nq="5">5</button>
+                </div>
+                <input type="hidden" id="nq" value="2">
+              </div>
+
+              <div class="setting-item">
+                <label for="shotsSelect">Shots:</label>
+                <select id="shotsSelect">
+                  <option value="256">256 shots</option>
+                  <option value="1024" selected>1024 shots</option>
+                  <option value="4096">4096 shots</option>
+                  <option value="8192">8192 shots</option>
+                </select>
+              </div>
+
+              <div class="setting-item action-buttons">
+                <button class="btn btn-primary" id="runBtn">
+                  <span class="btn-glow"></span>
+                  <span class="icon">▶</span> Simulate Circuit
+                </button>
+                <button class="btn btn-secondary" id="clearBtn" title="Clear all gates">
+                  <span class="icon">🗑️</span> Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Quantum Circuit Grid with SVG Bus Lines -->
+            <div class="circuit-scroll-container">
+              <div class="circuit-board" id="circuitBoard">
+                <svg class="circuit-wire-overlay" id="wireOverlay"></svg>
+                <table class="circuit-grid" id="circuitGrid"></table>
+              </div>
+            </div>
+
+            <!-- Step-By-Step Timeline Debugger -->
+            <div class="timeline-debugger-panel">
+              <div class="timeline-header">
+                <span class="timeline-title">⏱️ Step-by-Step Circuit Debugger & State Inspector</span>
+                <span class="timeline-step-badge" id="currentStepBadge">Step 0: Initial State</span>
+              </div>
+              <div class="timeline-controls">
+                <button class="timeline-btn" id="stepFirst" title="First Step">⏮</button>
+                <button class="timeline-btn" id="stepPrev" title="Step Back">◀ Prev</button>
+                <button class="timeline-btn play-btn" id="stepPlay" title="Auto Play Timeline">▶ Play</button>
+                <button class="timeline-btn" id="stepNext" title="Step Forward">Next ▶</button>
+                <button class="timeline-btn" id="stepLast" title="Last Step">⏭</button>
+                <input type="range" id="timelineSlider" min="0" max="0" value="0" class="timeline-slider">
+              </div>
+            </div>
+
+            <!-- State Summary HUD Banner -->
+            <div class="state-hud-banner" id="stateHudBanner">
+              <div class="hud-item">
+                <span class="hud-label">Dirac Statevector |ψ⟩:</span>
+                <span class="hud-value dirac-math" id="hudDirac">|00⟩</span>
+              </div>
+              <div class="hud-item">
+                <span class="hud-label">Entanglement Status:</span>
+                <span class="hud-value status-separable" id="hudEntangled">Separable (Pure)</span>
+              </div>
+              <div class="hud-item">
+                <span class="hud-label">Von Neumann Entropy:</span>
+                <span class="hud-value" id="hudEntropy">0.0000</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Visualizations & AI Tutor -->
+          <div class="studio-sidebar-stack">
+
+            <!-- 3D Interactive Bloch Sphere Visualizer -->
+            <div class="card glass bloch-card">
+              <div class="panel-header-row">
+                <div class="title-group">
+                  <span class="section-badge">3D PROJECTION</span>
+                  <h3>Interactive Bloch Spheres</h3>
+                </div>
+                <span class="hint-text">Drag sphere to rotate view in 3D</span>
+              </div>
+              <div class="bloch-spheres-container" id="blochContainer">
+                <div class="empty-state-notice">Run simulation or select a preset to render 3D Bloch vectors.</div>
+              </div>
+            </div>
+
+            <!-- Quantum State & Measurement Probabilities -->
+            <div class="card glass results-card">
+              <div class="panel-header-row">
+                <div class="title-group">
+                  <span class="section-badge">MEASUREMENT</span>
+                  <h3>State Distribution & Shots</h3>
+                </div>
+                <div class="toggle-pills" id="vizModeToggle">
+                  <button class="pill-btn active" data-mode="probs">Probabilities</button>
+                  <button class="pill-btn" data-mode="amplitudes">Amplitudes (Phasors)</button>
+                </div>
+              </div>
+
+              <div id="simError" class="sim-error-box" style="display: none;"></div>
+
+              <div class="viz-display-area">
+                <div id="probsContainer" class="probs-histogram">
+                  <div class="empty-state-notice">Press "Simulate Circuit" to view measurement distribution.</div>
+                </div>
+                <div id="amplitudesContainer" class="amplitudes-grid" style="display: none;"></div>
+              </div>
+
+              <div class="shots-summary-row" id="shotsSummaryRow">
+                <span class="shots-count-label" id="shotsCountLabel">Measured outcomes across 1024 shots</span>
+              </div>
+            </div>
+
+            <!-- AI Quantum Tutor Chat Box -->
+            <div class="card glass tutor-card">
+              <div class="panel-header-row">
+                <div class="title-group">
+                  <span class="section-badge">AI ASSISTANT</span>
+                  <h3>Quantum Copilot</h3>
+                </div>
+                <span class="ai-status-indicator"><span class="status-dot"></span> Ready</span>
+              </div>
+
+              <!-- Quick Prompt Chips -->
+              <div class="quick-prompt-chips">
+                <button class="prompt-chip" data-query="Explain my circuit step by step">💡 Explain Circuit</button>
+                <button class="prompt-chip" data-query="Why is my state entangled or separable?">🔗 Entanglement Check</button>
+                <button class="prompt-chip" data-query="What does Hadamard gate do with phase kickback?">🔄 Phase Kickback</button>
+                <button class="prompt-chip" data-query="How does Grover search achieve quadratic speedup?">🔍 Grover Search</button>
+              </div>
+
+              <div class="chat-messages-box" id="chatMessages">
+                <div class="chat-msg tutor-msg">
+                  <div class="avatar">⚛️</div>
+                  <div class="msg-bubble">
+                    <strong>Welcome to Zentum!</strong><br>
+                    I'm your Quantum AI Tutor. Load any preset algorithm, assemble custom quantum circuits, or ask me any question about superposition, entanglement, Bloch spheres, or quantum algorithms!
+                  </div>
+                </div>
+              </div>
+
+              <div class="chat-input-row">
+                <input type="text" id="tutorInput" placeholder="Ask anything: e.g., 'What is Bell state?', 'Explain my gates'..." autocomplete="off">
+                <button class="btn btn-primary send-btn" id="tutorSendBtn">
+                  <span>Send</span> 💬
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 2: COURSE MODULES & THEORY -->
+      <!-- ============================================== -->
+      <section id="curriculum" class="tab-pane">
+        <div class="curriculum-layout">
+          
+          <!-- Module List Sidebar -->
+          <div class="modules-sidebar card glass">
+            <div class="sidebar-header">
+              <span class="section-badge">CURRICULUM</span>
+              <h2>Quantum Modules</h2>
+            </div>
+            <div class="module-items-list" id="modulesList"></div>
+          </div>
+
+          <!-- Active Lesson Content Viewer -->
+          <div class="lesson-viewer card glass">
+            <div class="lesson-header">
+              <div class="lesson-badge-category" id="lessonCategory">Module 1</div>
+              <h2 id="lessonTitle">Loading Lesson...</h2>
+              <p class="lesson-summary-lead" id="lessonSummary"></p>
+            </div>
+
+            <div class="lesson-body-content" id="lessonText"></div>
+
+            <div class="lesson-interactive-action-box" id="lessonActionBox">
+              <div class="action-task-info">
+                <h4>🎯 Practical Circuit Task:</h4>
+                <p id="lessonTaskText">Load the preset circuit to experience this principle interactively.</p>
+              </div>
+              <button class="btn btn-primary pulse-btn" id="loadLessonPresetBtn">
+                ⚡ Load & Experiment in Studio
+              </button>
+            </div>
+
+            <div class="lesson-navigation-footer">
+              <button class="btn btn-secondary" id="prevLessonBtn">← Previous Lesson</button>
+              <button class="btn btn-primary" id="markLessonCompleteBtn">✓ Mark Complete & Next →</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 3: ADAPTIVE MASTERY QUIZ -->
+      <!-- ============================================== -->
+      <section id="quiz-tab" class="tab-pane">
+        <div class="quiz-container-card card glass">
+          <div class="quiz-header-panel">
+            <div>
+              <span class="section-badge">ASSESSMENT</span>
+              <h2>Adaptive Quantum Mastery Quiz</h2>
+              <p class="quiz-subtitle" id="quizSubtitle">Personalized question bank testing foundational & algorithmic quantum mastery.</p>
+            </div>
+            <div class="quiz-score-badge">
+              <span class="score-label">Score Streak:</span>
+              <span class="score-number" id="quizScoreDisplay">0 / 0</span>
+            </div>
+          </div>
+
+          <div class="quiz-card-content" id="quizCardArea">
+            <div class="question-number-badge" id="qTopicBadge">Topic: Superposition</div>
+            <h3 class="question-text" id="quizQuestionText">Loading question...</h3>
+
+            <div class="quiz-options-list" id="quizOptionsList"></div>
+
+            <div class="quiz-feedback-box" id="quizFeedbackBox" style="display: none;">
+              <div class="feedback-title" id="feedbackTitle"></div>
+              <div class="feedback-explanation" id="feedbackExplanation"></div>
+            </div>
+          </div>
+
+          <div class="quiz-footer-actions">
+            <button class="btn btn-secondary" id="skipQBtn">Skip Question</button>
+            <button class="btn btn-primary" id="nextQBtn" style="display: none;">Next Question →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- TAB 4: CODE EXPORT & HARDWARE -->
+      <!-- ============================================== -->
+      <section id="export-tab" class="tab-pane">
+        <div class="export-grid">
+          
+          <div class="card glass export-code-panel">
+            <div class="panel-header-row">
+              <div class="title-group">
+                <span class="section-badge">INTEROPERABILITY</span>
+                <h2>Export to Real Quantum Frameworks</h2>
+              </div>
+              <div class="export-format-pills" id="exportFormatPills">
+                <button class="pill-btn active" data-fmt="qiskit">IBM Qiskit (Python)</button>
+                <button class="pill-btn" data-fmt="qasm">OpenQASM 2.0</button>
+                <button class="pill-btn" data-fmt="cirq">Google Cirq (Python)</button>
+              </div>
+            </div>
+
+            <div class="code-viewer-wrapper">
+              <div class="code-header-bar">
+                <span class="code-lang-label" id="codeLangLabel">Python (Qiskit v1.0+)</span>
+                <button class="btn btn-sm copy-btn" id="copyCodeBtn">📋 Copy Code</button>
+              </div>
+              <pre class="code-block"><code id="codeOutput">// Generating code...</code></pre>
+            </div>
+          </div>
+
+          <div class="card glass export-info-panel">
+            <span class="section-badge">HOW TO RUN</span>
+            <h3>Execute on Real Quantum Hardware</h3>
+            
+            <div class="hardware-guide-steps">
+              <div class="guide-step">
+                <div class="step-num">1</div>
+                <div class="step-desc">
+                  <strong>Get IBM Quantum Access</strong>
+                  <p>Create a free account on <a href="https://quantum.ibm.com/" target="_blank" rel="noopener">IBM Quantum Platform</a> and copy your API Token.</p>
+                </div>
+              </div>
+
+              <div class="guide-step">
+                <div class="step-num">2</div>
+                <div class="step-desc">
+                  <strong>Install Qiskit & Connect</strong>
+                  <code>pip install qiskit qiskit-ibm-runtime</code>
+                </div>
+              </div>
+
+              <div class="guide-step">
+                <div class="step-num">3</div>
+                <div class="step-desc">
+                  <strong>Submit to Superconducting Qubits</strong>
+                  <p>Paste the generated Qiskit script into Jupyter or your Python terminal and dispatch your jobs to real superconducting QPUs!</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="toast-notice" id="copyToast" style="display: none;">
+              ✅ Code successfully copied to clipboard!
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Zentum Quantum Platform • Built for Researchers, Students & Quantum Engineers • Statevector & Multi-Qubit Simulator</p>
+    </footer>
+
+  </div>
+
+  <!-- Main Application JavaScript -->
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
